@@ -1,4 +1,4 @@
-# HC Parliament Voter ID Registration System Version 2
+# HC Parliament Voter ID Registration System Version 3
 ### Unique Voter identification system for Hack Club Parliament
 ### [https://voterid.hcgov.uk](https://voterid.hcgov.uk)
 
@@ -58,7 +58,7 @@ AIRTABLE_TBL_NAME="Table 1"
 ```
 - Run the following commands in the terminal (or different terminal instances) in the root directory of wherever you installed this:
 ```shell
-node server.js
+node server.ts
 ```
 
 ---
