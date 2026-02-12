@@ -123,7 +123,7 @@ app.get("/callback", async (req, res) => {
         ]);
 
 
-        await sendDM(userInfo.data.sub, `:parliament-mini: *Thank you for signing up to vote in the ${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(electionCycle).getMonth()]} Hack Club elections.* :tada:
+        await sendDM(userInfo.data.sub, `:parliament-mini: *Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections of the Democratic Republic of Hack Club.* :tada:
 
 > Time of retrieval: ${new Date(unixTimestamp).toISOString()}
 > User Slack ID: ${userInfo.data.sub}
