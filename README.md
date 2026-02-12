@@ -26,6 +26,8 @@ Select and copy, or click on the "Copy" button to save the code to your clipboar
   - Email: "Email"
   - Text: "Registration time"
   - Text: "Voter ID"
+  - Text: "IDV"
+  - Text: "Hackatime"
   - Autonumber: "Index"
 - Get your Airtable API key at [https://airtable.com/create/tokens](https://airtable.com/create/tokens)
 ```
