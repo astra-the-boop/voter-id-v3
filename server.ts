@@ -67,16 +67,6 @@ async function sendDM(channelID:string, messageText:string){
     }
 }
 
-//shitfuckers
-
-interface voterFields{
-    "Slack ID": string;
-    "Username": string;
-    "Email": string;
-    "Registration time": Date;
-    "Voter ID": string
-}
-
 app.get("/callback", async (req, res) => {
     const code = req.query.code as string | undefined;
     if(!code){
@@ -118,6 +108,8 @@ app.get("/callback", async (req, res) => {
                     "Email": userInfo.data.email || "",
                     "Registration time": new Date(unixTimestamp),
                     "Voter ID": voterId,
+                    "IDV": "", //TODO:FILL IN LATER
+                    "Hackatime": ""//TODO:FILL IN LATER
                 } as any
             },
         ]);
