@@ -7,6 +7,8 @@ import Airtable from "airtable";
 const app = express();
 const port = 3198;
 
+const electionCycle: string = "2026-02-12" //YYYY-MM-DD
+
 const clientId = process.env.CLIENT_ID as string;
 const clientSecret = process.env.CLIENT_SECRET as string;
 const redirectUri = `${process.env.REDIRECT_DOMAIN}/callback`;
@@ -121,7 +123,7 @@ app.get("/callback", async (req, res) => {
         ]);
 
 
-        await sendDM(userInfo.data.sub, `:parliament-mini: *Thank you for signing up to vote in the November 2025 Hack Club elections.* :tada:
+        await sendDM(userInfo.data.sub, `:parliament-mini: *Thank you for signing up to vote in the ${["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][new Date(electionCycle).getMonth()]} Hack Club elections.* :tada:
 
 > Time of retrieval: ${new Date(unixTimestamp).toISOString()}
 > User Slack ID: ${userInfo.data.sub}
