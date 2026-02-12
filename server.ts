@@ -2,36 +2,35 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import * as crypto from "crypto";
 import express, {Request, Response} from "express";
-import axios, {Axios} from "axios";
-import * as Airtable from "airtable";
+import axios, {AxiosError} from "axios";
+import Airtable from "airtable";
 const app = express();
-// const port = 3198;
+const port = 3198;
 
-console.log(process.env.PORT);
+const clientId = process.env.CLIENT_ID as string;
+const clientSecret = process.env.CLIENT_SECRET as string;
+const redirectUri = `${process.env.REDIRECT_DOMAIN}/callback`;
+const airtableKey = process.env.AIRTABLE_KEY as string;
+const airtableDbId = process.env.AIRTABLE_DB_ID as string;
+const tableName = process.env.AIRTABLE_TBL_NAME as string;
 
-//
-// const clientId = process.env.CLIENT_ID;
-// const clientSecret = process.env.CLIENT_SECRET;
-// const redirectUri = `${process.env.REDIRECT_DOMAIN}/callback`;
-//
-// //airtable bs
-//
-// const base = new Airtable({apiKey: process.env.AIRTABLE_KEY}).base(process.env.AIRTABLE_DB_ID);
-// const table = base(process.env.AIRTABLE_TBL_NAME);
-//
-// async function getIndex(){
-//     const records = await table.select({
-//         sort:[{field: "Index", direction: "desc"}],
-//         maxRecords: 1
-//     }).firstPage();
-//
-//     if(records.length === 0){
-//         return 1;
-//     }
-//     const latest = records[0].fields["Index"] || 0;
-//     return latest + 1;
-// }
-//
+//airtable bs
+
+const base = new Airtable({apiKey: airtableKey}).base(airtableDbId);
+const table = base(tableName);
+
+async function getIndex(){
+    const records = await table.select({
+        sort:[{field: "Index", direction: "desc"}],
+        maxRecords: 1
+    }).firstPage();
+
+    if(records.length === 0){
+        return 1;
+    }
+    return (records[0].fields["Index"] || 0) as number + 1;
+}
+
 // export function cipherProcess(slackId, timestamp, index){
 //     const base = `${slackId}:${timestamp}:${index}`;
 //     const hash = crypto.createHash("sha1").update(base).digest("hex");
