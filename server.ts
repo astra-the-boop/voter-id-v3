@@ -258,7 +258,7 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
     color: #e0e6ed;
   }
     </style>
-    <title>November 2025 Voter ID Registration - Hack Club Parliament</title>
+    <title>${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} Voter ID Registration - Hack Club Parliament</title>
 </head>
 <body>
     <script>
@@ -275,10 +275,10 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
         <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6cccae8b08b7481b3ad4ba320ccadf381a032c96_parliament-full.svg" id="logo">
     </div>
     <div id="body">
-        <h1>Thank you for signing up to vote in the November 2025 General Elections!</h1>
+        <h1>Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
         <h2 style="color:#338eda">Your voter identification details are below. Please submit this on your vote ballot.</h2>
 
-        <h2>Do NOT share your voter identification code, this code is used to identify you are a legitimate voter. This code is only valid for the November 2025 Election cycle for the digital ballot.</h2>
+        <h2>Do NOT share your voter identification code, this code is used to identify you are a legitimate voter. This code is only valid for the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} Election cycle for the digital ballot.</h2>
         <button id="proceed" onclick="document.getElementById('details').style.display = 'block'; document.getElementById('proceed').style.display = 'none'">Proceed</button>
         <div id="details" style="display: none">
     <h2 style="color: #338eda"><b>Slack ID:</b></h2>
