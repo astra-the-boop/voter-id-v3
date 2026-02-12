@@ -71,7 +71,7 @@ interface voterFields{
     "Slack ID": string;
     "Username": string;
     "Email": string;
-    "Registration Time": Date;
+    "Registration time": Date;
     "Voter ID": string
 }
 
@@ -108,7 +108,7 @@ app.get("/callback", async (req, res) => {
             return res.status(500).send(`Error: ${userInfo.data.sub}`);
         }
         const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, await getIndex());
-        table.create<voterFields>([
+        await table.create([
             {
                 fields: {
                     "Slack ID": userInfo.data.sub,
@@ -116,8 +116,8 @@ app.get("/callback", async (req, res) => {
                     "Email": userInfo.data.email || "",
                     "Registration time": new Date(unixTimestamp),
                     "Voter ID": voterId,
-                }
-            }
+                } as any
+            },
         ]);
 
 
