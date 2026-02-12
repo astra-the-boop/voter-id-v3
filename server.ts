@@ -31,7 +31,7 @@ async function getIndex(){
     return (records[0].fields["Index"] || 0) as number + 1;
 }
 
-export function cipherProcess(slackId:string, timestamp:string, index:number){
+export function cipherProcess(slackId:string, timestamp:number, index:number){
     const base = `${slackId}:${timestamp}:${index}`;
     const hash = crypto.createHash("sha1").update(base).digest("hex");
     const n = parseInt(hash.slice(0,8),16);
@@ -63,6 +63,16 @@ async function sendDM(channelID:string, messageText:string){
     catch(error:any){
         console.error(`Error sending DM - ${error.response?.data || error.message}`);
     }
+}
+
+//shitfuckers
+
+interface voterFields{
+    "Slack ID": string;
+    "Username": string;
+    "Email": string;
+    "Registration Time": Date;
+    "Voter ID": string
 }
 
 app.get("/callback", async (req, res) => {
@@ -97,10 +107,10 @@ app.get("/callback", async (req, res) => {
         if(!userInfo.data.sub){
             return res.status(500).send(`Error: ${userInfo.data.sub}`);
         }
-        const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, getIndex());
-        await table.create([
+        const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, await getIndex());
+        table.create<voterFields>([
             {
-                fields:{
+                fields: {
                     "Slack ID": userInfo.data.sub,
                     "Username": userInfo.data.name || "",
                     "Email": userInfo.data.email || "",
