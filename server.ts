@@ -31,40 +31,40 @@ async function getIndex(){
     return (records[0].fields["Index"] || 0) as number + 1;
 }
 
-// export function cipherProcess(slackId, timestamp, index){
-//     const base = `${slackId}:${timestamp}:${index}`;
-//     const hash = crypto.createHash("sha1").update(base).digest("hex");
-//     const n = parseInt(hash.slice(0,8),16);
-//     let base36=n.toString(36).toUpperCase();
-//     if(base36.length>6){
-//         base36=base36.slice(-6);
-//     }else{
-//         base36=base36.padStart(6,"0");
-//
-//     }
-//     return base36;
-// }
-//
-// //the rest of the code below :3c
-//
-// async function sendDM(channelID, messageText, time){
-//     try{
-//         const response = await axios.post("https://slack.com/api/chat.postMessage",{
-//             channel: channelID,
-//             text: messageText
-//         },{
-//             headers:{
-//                 "Authorization": `Bearer ${process.env.BOT_TOKEN}`,
-//                 "Content-Type": "application/json"
-//             }
-//         });
-//         console.log("Slack API response:", response.data);
-//     }
-//     catch(error){
-//         console.error(`Error sending DM - ${error.response?.data || error.message}`);
-//     }
-// }
-//
+export function cipherProcess(slackId:string, timestamp:string, index:number){
+    const base = `${slackId}:${timestamp}:${index}`;
+    const hash = crypto.createHash("sha1").update(base).digest("hex");
+    const n = parseInt(hash.slice(0,8),16);
+    let base36=n.toString(36).toUpperCase();
+    if(base36.length>6){
+        base36=base36.slice(-6);
+    }else{
+        base36=base36.padStart(6,"0");
+
+    }
+    return base36;
+}
+
+//the rest of the code below :3c
+
+async function sendDM(channelID:string, messageText:string){
+    try{
+        const response = await axios.post("https://slack.com/api/chat.postMessage",{
+            channel: channelID,
+            text: messageText
+        },{
+            headers:{
+                "Authorization": `Bearer ${process.env.BOT_TOKEN}`,
+                "Content-Type": "application/json"
+            }
+        });
+        console.log("Slack API response:", response.data);
+    }
+    catch(error:any){
+        console.error(`Error sending DM - ${error.response?.data || error.message}`);
+    }
+}
+
 // app.get("/callback", async (req, res) => {
 //     const code = req.query.code;
 //     const unixTimestamp = Date.now();
