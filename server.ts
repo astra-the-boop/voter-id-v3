@@ -66,7 +66,10 @@ async function sendDM(channelID:string, messageText:string){
 }
 
 app.get("/callback", async (req, res) => {
-    const code = req.query.code;
+    const code = req.query.code as string | undefined;
+    if(!code){
+        return res.status(404).send("missing code param")
+    }
     const unixTimestamp = Date.now();
 
     try{
