@@ -16,6 +16,18 @@ const airtableKey = process.env.AIRTABLE_KEY as string;
 const airtableDbId = process.env.AIRTABLE_DB_ID as string;
 const tableName = process.env.AIRTABLE_TBL_NAME as string;
 
+async function getHackatimeStatus(slackId: string){
+    try{
+        const response = await fetch(`https://hackatime.hackclub.com/api/v1/users/${slackId}/trust_factor`);
+        const json = await response.json();
+        console.log(json);
+
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
 //airtable bs
 
 const base = new Airtable({apiKey: airtableKey}).base(airtableDbId);
@@ -104,6 +116,8 @@ app.get("/callback", async (req, res) => {
             return res.status(500).send(`Error: ${userInfo.data.sub}`);
         }
         const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, await getIndex());
+        await getHackatimeStatus(userInfo.data.sub);
+
         await table.create([
             {
                 fields: {
