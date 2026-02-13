@@ -16,6 +16,10 @@ const airtableKey = process.env.AIRTABLE_KEY as string;
 const airtableDbId = process.env.AIRTABLE_DB_ID as string;
 const tableName = process.env.AIRTABLE_TBL_NAME as string;
 
+const hcaClientId = process.env.HCA_CLIENT_ID as string;
+const hcaClientSecret = process.env.HCA_CLIENT_SECRET as string;
+const hcaRedirect = process.env.HCA_REDIRECT as string;
+
 async function getHackatimeStatus(slackId: string){
     try{
         const response = await fetch(`https://hackatime.hackclub.com/api/v1/users/${slackId}/trust_factor`);
@@ -325,6 +329,25 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
         res.status(500).send(`Oauth exchange failed - ${err}`);
     }
 });
+
+//hca
+app.get("/hca/callback", async(req, res) => {
+    const code = req.query.code as string|undefined;
+    if(!code){
+        return res.status(404).send("missing code")
+    }
+    const unixTimestamp = Date.now();
+    try{
+        const tokenRes = await axios.post("https://auth.hackclub.com/oauth/token", {
+            client_id: hcaClientId,
+            client_secret: hcaClientSecret,
+            code,
+            redirect_uri: hcaRedirect,
+            grant_type: "authorization_code",
+        });
+
+    }
+})
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
