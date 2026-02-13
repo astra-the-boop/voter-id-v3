@@ -72,6 +72,10 @@ app.get("/callback", async (req, res) => {
     if(!code){
         return res.status(404).send("missing code param")
     }
+
+    console.log("code", code);
+    console.log("client id", clientId);
+    console.log("redirect URI", redirectUri);
     const unixTimestamp = Date.now();
 
     try{
