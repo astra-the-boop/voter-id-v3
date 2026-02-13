@@ -87,7 +87,7 @@ app.get("/callback", async (req, res) => {
         });
 
         if(!tokenRes.data.ok){
-            return res.status(500).send(`Oath error: ${tokenRes.data.error}`);
+            return res.status(500).send(`Oauth error: ${tokenRes.data.error}`);
         }
 
         const accessToken = tokenRes.data.access_token;
@@ -293,7 +293,7 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
 
     } catch(err){
         console.error(err);
-        res.status(500).send(`Oath exchange failed - ${err}`);
+        res.status(500).send(`Oauth exchange failed - ${err}`);
     }
 });
 
