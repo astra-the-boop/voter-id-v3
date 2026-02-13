@@ -28,6 +28,17 @@ async function getHackatimeStatus(slackId: string){
     }
 }
 
+async function getIDVstatus(slackId: string){
+    try{
+        const response = await fetch(`https://auth.hackclub.com/api/external/check?slack_id=${slackId}`);
+        const json = await response.json();
+        return json.result;
+    }
+    catch(error){
+        console.log(error);
+    }
+}
+
 //airtable bs
 
 const base = new Airtable({apiKey: airtableKey}).base(airtableDbId);
@@ -126,7 +137,7 @@ app.get("/callback", async (req, res) => {
                     "Email": userInfo.data.email || "",
                     "Registration time": new Date(unixTimestamp),
                     "Voter ID": voterId,
-                    "IDV": "", //TODO:FILL IN LATER
+                    "IDV": await getIDVstatus(userInfo.data.sub),
                     "Hackatime": await getHackatimeStatus(userInfo.data.sub)
                 } as any
             },
