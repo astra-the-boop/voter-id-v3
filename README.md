@@ -55,7 +55,7 @@ BOT_TOKEN=example
 REDIRECT_DOMAIN=https://example.com
 
 AIRTABLE_KEY=xxxxxxxxxxxxxxxxx.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-AIRTABLE_DB_ID=xxxxxxxxxxxxxxxxx
+AIRTABLE_DB_ID=appxxxxxxxxxxxxxx
 AIRTABLE_TBL_NAME="Table 1"
 ```
 - Run the following commands in the terminal (or different terminal instances) in the root directory of wherever you installed this:
