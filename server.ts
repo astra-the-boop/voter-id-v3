@@ -346,6 +346,15 @@ app.get("/hca/callback", async(req, res) => {
             grant_type: "authorization_code",
         });
 
+        const accessToken = tokenRes.data.access_token;
+        const idToken = tokenRes.data.id_token;
+
+        const userInfo = await axios.get(`https://auth.hackclub.com/oauth/userinfo`,{headers: {"Authorization": `Bearer ${accessToken}`}});
+
+        console.log(`HCA: ${userInfo.data}`);
+    }
+    catch(err){
+        console.error(err);
     }
 })
 
