@@ -20,8 +20,8 @@ async function getHackatimeStatus(slackId: string){
     try{
         const response = await fetch(`https://hackatime.hackclub.com/api/v1/users/${slackId}/trust_factor`);
         const json = await response.json();
-        console.log(json);
-
+        console.log(json.trust_level);
+        return json.trust_level;
     }
     catch(error){
         console.log(error);
@@ -116,7 +116,7 @@ app.get("/callback", async (req, res) => {
             return res.status(500).send(`Error: ${userInfo.data.sub}`);
         }
         const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, await getIndex());
-        await getHackatimeStatus(userInfo.data.sub);
+        // await getHackatimeStatus(userInfo.data.sub);
 
         await table.create([
             {
@@ -127,7 +127,7 @@ app.get("/callback", async (req, res) => {
                     "Registration time": new Date(unixTimestamp),
                     "Voter ID": voterId,
                     "IDV": "", //TODO:FILL IN LATER
-                    "Hackatime": ""//TODO:FILL IN LATER
+                    "Hackatime": await getHackatimeStatus(userInfo.data.sub)
                 } as any
             },
         ]);
