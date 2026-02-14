@@ -84,7 +84,7 @@ async function sendDM(channelID:string, messageText:string){
         },{
             headers:{
                 "Authorization": `Bearer ${process.env.BOT_TOKEN}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/x-www-form-urlencoded"
             }
         });
         console.log("Slack API response:", response.data);
