@@ -338,13 +338,14 @@ app.get("/hca/callback", async(req, res) => {
     }
     const unixTimestamp = Date.now();
     try{
-        const tokenRes = await axios.post("https://auth.hackclub.com/oauth/token", {
-            client_id: hcaClientId,
+        const tokenRes = await axios.post("https://auth.hackclub.com/oauth/token",
+            null,
+            {params:{client_id: hcaClientId,
             client_secret: hcaClientSecret,
             code,
             redirect_uri: hcaRedirect,
-            grant_type: "authorization_code",
-        });
+            grant_type: "authorization_code"}
+                , headers: {"Content-Type": "application/json"}});
 
         const accessToken = tokenRes.data.access_token;
         const idToken = tokenRes.data.id_token;
