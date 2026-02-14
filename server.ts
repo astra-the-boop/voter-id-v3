@@ -84,7 +84,7 @@ async function sendDM(channelID:string, messageText:string){
         },{
             headers:{
                 "Authorization": `Bearer ${process.env.BOT_TOKEN}`,
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             }
         });
         console.log("Slack API response:", response.data);
@@ -345,7 +345,7 @@ app.get("/hca/callback", async(req, res) => {
             code,
             redirect_uri: hcaRedirect,
             grant_type: "authorization_code"}
-                , headers: {"Content-Type": "application/json"}});
+                , headers: {"Content-Type": "application/x-www-form-urlencoded"}});
 
         const accessToken = tokenRes.data.access_token;
         const idToken = tokenRes.data.id_token;
