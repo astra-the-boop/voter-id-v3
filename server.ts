@@ -354,12 +354,15 @@ app.get("/hca/callback", async(req, res) => {
         const data = await tokenRes.json();
         const accessToken = data.access_token;
 
-        const userInfo = await fetch("https://auth.hackclub.com/api/v1/me", {
+        const userInfoRes = await fetch("https://auth.hackclub.com/api/v1/me", {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
             }
         });
-        console.log(userInfo)
+        console.log(userInfoRes);
+
+        const userInfo = await userInfoRes.json();
+        console.log(userInfo);
 
 
     }
