@@ -4,6 +4,7 @@ import * as crypto from "crypto";
 import express, {Request, Response} from "express";
 import axios, {AxiosError} from "axios";
 import Airtable from "airtable";
+import jwt from "jsonwebtoken";
 const app = express();
 const port = 3198;
 
@@ -338,21 +339,29 @@ app.get("/hca/callback", async(req, res) => {
     }
     const unixTimestamp = Date.now();
     try{
-        const tokenRes = await axios.post("https://auth.hackclub.com/oauth/token",
-            null,
-            {params:{client_id: hcaClientId,
-            client_secret: hcaClientSecret,
-            code,
-            redirect_uri: hcaRedirect,
-            grant_type: "authorization_code"}
-                , headers: {"Content-Type": "application/x-www-form-urlencoded"}});
+        const tokenRes = await fetch("https://auth.hackclub.com/oauth/token",
+            {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: new URLSearchParams({
+                    client_id: hcaClientId,
+                    client_secret: hcaClientSecret,
+                    code,
+                    redirect_uri: hcaRedirect,
+                    grant_type: "authorization_code"
+                })
+            });
+        const data = await tokenRes.json();
+        const accessToken = data.access_token;
 
-        const accessToken = tokenRes.data.access_token;
-        const idToken = tokenRes.data.id_token;
+        const userInfo = await fetch("https://auth.hackclub.com/oauth/v1/me", {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+            }
+        });
+        console.log(userInfo)
 
-        const userInfo = await axios.get(`https://auth.hackclub.com/oauth/userinfo`,{headers: {"Authorization": `Bearer ${accessToken}`}});
 
-        console.log(`HCA: ${userInfo.data}`);
     }
     catch(err){
         console.error(err);
