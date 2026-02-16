@@ -58,3 +58,16 @@ body{
 h1{
     font-size: 40px
 }
+
+#hcaLogin{
+    background-color: #ec3750;
+    color: white;
+    border: none;
+    height: 3rem;
+    width: 16rem;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: 'Phantom Sans', sans-serif;
+    margin-top: 1rem;
+}
