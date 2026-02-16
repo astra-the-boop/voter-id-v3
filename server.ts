@@ -4,7 +4,6 @@ import * as crypto from "crypto";
 import express, {Request, Response} from "express";
 import axios, {AxiosError} from "axios";
 import Airtable from "airtable";
-import jwt from "jsonwebtoken";
 const app = express();
 const port = 3198;
 
@@ -31,6 +30,32 @@ async function getHackatimeStatus(slackId: string){
     catch(error){
         console.log(error);
     }
+}
+
+type airtableRecord = {
+    slackId: string;
+    username: string;
+    email: string;
+    registrationTime: Date;
+    voterId: string;
+    idv: string;
+    hackatime: string
+};
+
+async function createRecord(input:airtableRecord){
+    await table.create([
+        {
+            fields: {
+                "Slack ID": input.slackId,
+                "Username": input.username,
+                "Email": input.email,
+                "Registration time": input.registrationTime,
+                "Voter ID": input.voterId,
+                "IDV": input.idv,
+                "Hackatime": input.hackatime,
+            } as any
+        },
+    ]);
 }
 
 async function getIDVstatus(slackId: string){
@@ -134,20 +159,15 @@ app.get("/callback", async (req, res) => {
         const voterId = cipherProcess(userInfo.data.sub, unixTimestamp, await getIndex());
         // await getHackatimeStatus(userInfo.data.sub);
 
-        await table.create([
-            {
-                fields: {
-                    "Slack ID": userInfo.data.sub,
-                    "Username": userInfo.data.name || "",
-                    "Email": userInfo.data.email || "",
-                    "Registration time": new Date(unixTimestamp),
-                    "Voter ID": voterId,
-                    "IDV": await getIDVstatus(userInfo.data.sub),
-                    "Hackatime": await getHackatimeStatus(userInfo.data.sub)
-                } as any
-            },
-        ]);
-
+        await createRecord({
+            slackId: userInfo.data.sub,
+            username: userInfo.data.name || "",
+            email: userInfo.data.email,
+            voterId: voterId,
+            registrationTime: new Date(unixTimestamp),
+            idv: await getIDVstatus(userInfo.data.sub),
+            hackatime: await getHackatimeStatus(userInfo.data.sub)
+        });
 
         await sendDM(userInfo.data.sub, `:parliament-mini: *Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections of the Democratic Republic of Hack Club.* :tada:
 
@@ -263,7 +283,7 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
     text-align: center;
     line-height: inherit;
     text-decoration: none;
-    padding: 16px 16px 16px 16px
+    padding: 16px 16px 16px 16px;
     color: #ffffff;
     background-color: #ec3750;
     font-size:16px;
@@ -301,7 +321,7 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
         <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6cccae8b08b7481b3ad4ba320ccadf381a032c96_parliament-full.svg" id="logo">
     </div>
     <div id="body">
-        <h1>Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
+        <h1>${userInfo.data.name}, Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
         <h2 style="color:#338eda">Your voter identification details are below. Please submit this on your vote ballot.</h2>
 
         <h2>Do NOT share your voter identification code, this code is used to identify you are a legitimate voter. This code is only valid for the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} Election cycle for the digital ballot.</h2>
@@ -359,12 +379,170 @@ app.get("/hca/callback", async(req, res) => {
                 "Authorization": `Bearer ${accessToken}`,
             }
         });
-        console.log(userInfoRes);
 
         const userInfo = await userInfoRes.json();
-        console.log(userInfo);
+        console.log(userInfo)
+        const voterId = cipherProcess(userInfo.identity.slack_id, unixTimestamp, await getIndex());
+        await createRecord({
+            slackId: userInfo.identity.slack_id,
+            username: `${userInfo.identity.first_name} ${userInfo.identity.last_name}` || "",
+            email: userInfo.data.primary_email,
+            voterId: voterId,
+            registrationTime: new Date(unixTimestamp),
+            idv: await getIDVstatus(userInfo.identity.slack_id),
+            hackatime: await getHackatimeStatus(userInfo.identity.slack_id)
+        });
 
+        await sendDM(userInfo.identity.slack_id, `:parliament-mini: *Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections of the Democratic Republic of Hack Club
+        
+        > Time of retrieval: ${new Date(unixTimestamp).toISOString()}
+        >User Slack ID ${userInfo.identity.slack_id}
+        
+        _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`)
 
+        res.send(`
+        <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+            <style>
+                @media (max-aspect-ratio: 3/4), (max-width: 768px){
+                    #body{
+                        padding: 0 5% 0 5%;
+                    }
+                    h1{
+                        font-size: 28px;
+                    }
+                    code{
+                        font-size: 1.2rem;
+                        word-wrap: break-word;
+                    }
+                    #logo{
+                        height: 45px
+                }
+                @font-face{
+                    font-family: "Phantom Sans";
+                    src: url("https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff") format("woff"),
+                    url("https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Regular.woff2") format("woff2");
+                    font-weight: normal;
+                    font-style: normal;
+                    font-display: swap;
+                }
+                @font-face{
+                    font-family: "Phantom Sans";
+                    src: ("https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Italic.woff") format("woff"),
+                    url("https://assets.hackclub.com/fonts/Phantom_Sans_0.7/Italic.woff2") format("woff2");
+                    font-weight: normal;
+                    font-style: italic;
+                    font-display: swap;
+                }
+                body{
+                    background-color: #e0e6ed;
+                    margin: 0;
+                }
+                
+                code{
+                    background-color: #8492a6;
+                    color: black;
+                    font-size: 1.7rem;
+                }
+                
+                #body{
+                    font-family: "Phatom Sans", sans-serif;
+                    text-align: center;
+                    color: #ec3750;
+                    padding: 0 20% 0 20%;
+                }
+                
+                #header{
+                    background-color: #333;
+                    min-width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    padding-top: 15px;
+                    padding-bottom: 20px;
+                }
+                
+                #logo{
+                    height: 60px;
+                }
+                
+                h1{
+                    font-size: 40px
+                }
+                
+                button{
+                    cursor: pointer;
+                    font-family: inherit;
+                    border-radius: 99999px;
+                    font-weight: 700;
+                    display: inline-flex;
+                    align-items: center;
+                    justify content: center;
+                    box-shadow: 0 4px 8px rgba(0, 0,0,0.125);
+                    letter-spacing: 0.009em;
+                    -webkit-tap-highlight-color: transparent;
+                    transition: 0.125s ease-in-out;
+                    box-sizing: border-box;
+                    margin-top: 10px;
+                    min-width: 0;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    appearance: none;
+                    text-align: center;
+                    text-decoration; none;
+                    background-color: #ec3750;
+                    font-size: 16px;
+                    background: none;
+                    color: #ec3750;
+                    border: 2px solid currentColor;
+                    padding: 5px;
+                }
+            }
+            button:focus, button:hover{
+                box-shadow: 0 1px 2px rgba(0,0,0,0.625);
+                transform: scale(1.0625);
+            }
+            summary::marker{
+                content: ""
+            }
+            code{
+                color: #e0e6ed
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+            function copyText(id){
+                const text = document.getElementById(id).textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("Copied " + id + " to clipboard");
+                }).catch(err => {
+                    alert("Failed to copy text: "+err);
+                });
+            } 
+        </script>
+        <div id="header">
+            <img src="">
+        </div>
+        <div id="body">
+            <h1>${userInfo.identity.last_name}, Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-us", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
+            <h2 style="color: #338eda">Your voter identification details are below. Please submit this on your vote ballot.</h2>
+            
+            <h2>Do NOT share your voter identification code, this code is used to whether identify you are a legitimate voter. This code is only valid for the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()}</h2>
+            <button id="proceed" onclick="document.getElementById('details').style.display = 'block'; document.getElementById('details').style.display = 'block'">Proceed</button>
+            <div id="details" style="display: none">
+                <h2 style="color: #338eda"><b>Slack ID:</b></h2>
+                <div style="border-radius: 5px; background-color: #8492a6; padding: 10px">
+                    <code id="Voter_ID_Code">${voterId}</code>
+                </div>
+                <button onclick="copyText('Voter_ID_Code')">Copy text</button>
+            </div>
+            <br><br><p style="color: #8492a6">The Parliament of Hack Club (Hack Club Parliament) and other associated communities and entities are not associated with the Hack Club 501(c)(3) non-profit organization. Ths is an unofficial community group and only exists for the purpose of entertainment.</p>
+        </div>
+    </body>
+    
+`)
     }
     catch(err){
         console.error(err);
