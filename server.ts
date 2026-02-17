@@ -393,7 +393,7 @@ app.get("/hca/callback", async(req, res) => {
             hackatime: await getHackatimeStatus(userInfo.identity.slack_id)
         });
 
-        await sendDM(userInfo.identity.slack_id, `:parliament-mini: *Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections of the Democratic Republic of Hack Club
+        await sendDM(userInfo.identity.slack_id, `:parliament-mini: *Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections of the Democratic Republic of Hack Club.* :tada:
         
         > Time of retrieval: ${new Date(unixTimestamp).toISOString()}
         >User Slack ID ${userInfo.identity.slack_id}
