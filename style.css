@@ -71,3 +71,6 @@ h1{
     font-family: 'Phantom Sans', sans-serif;
     margin-top: 1rem;
 }
+button:hover{
+    cursor: pointer;
+}
