@@ -318,7 +318,7 @@ _Not you? Contact us for support in <#C08FA68NV2T> so we can remove this vote!_`
     }
 </script>
     <div id="header">
-        <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6cccae8b08b7481b3ad4ba320ccadf381a032c96_parliament-full.svg" id="logo">
+        <img src="https://user-cdn.hackclub-assets.com/019c6977-598c-76bc-a27a-fbfa95353d10/parliament-full__1_.svg" id="logo">
     </div>
     <div id="body">
         <h1>${userInfo.data.name}, Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
@@ -542,7 +542,7 @@ app.get("/hca/callback", async(req, res) => {
     }
 </script>
     <div id="header">
-        <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/6cccae8b08b7481b3ad4ba320ccadf381a032c96_parliament-full.svg" id="logo">
+        <img src="https://user-cdn.hackclub-assets.com/019c6977-598c-76bc-a27a-fbfa95353d10/parliament-full__1_.svg" id="logo">
     </div>
     <div id="body">
         <h1>${userInfo.identity.last_name}, Thank you for signing up to vote in the ${new Date(electionCycle).toLocaleString("en-US", {month: "long"})} ${new Date(electionCycle).getFullYear()} General Elections!</h1>
