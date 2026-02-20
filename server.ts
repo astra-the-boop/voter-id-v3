@@ -5,7 +5,7 @@ import express, {Request, Response} from "express";
 import axios, {AxiosError} from "axios";
 import Airtable from "airtable";
 const app = express();
-const port = 3198;
+const port = 3298;
 
 const electionCycle: string = "2026-02-12" //YYYY-MM-DD
 
